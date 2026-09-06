@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Sparkles,
   GitBranch,
@@ -11,7 +11,9 @@ import {
   Play,
   Check,
   Clock,
-  RefreshCw
+  RefreshCw,
+  Sun,
+  Moon
 } from 'lucide-react'
 
 // Custom GitHub SVG Icon
@@ -38,6 +40,16 @@ export default function App() {
   const [promptInput, setPromptInput] = useState<string>('Create a real-time collaborative task manager with dark mode and analytics')
   const [deploymentUrl, setDeploymentUrl] = useState<string | null>(null)
   const [commitCount, setCommitCount] = useState<number>(14)
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const stored = localStorage.getItem('theme')
+    if (stored === 'light' || stored === 'dark') return stored
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  })
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark')
+    localStorage.setItem('theme', theme)
+  }, [theme])
 
   const initialSteps: PipelineStep[] = [
     {
@@ -130,7 +142,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans selection:bg-indigo-500/30 selection:text-indigo-200 transition-colors duration-300">
       {/* Background glow accents */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[750px] h-[350px] bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-pink-600/20 blur-3xl rounded-full opacity-60" />
@@ -138,34 +150,42 @@ export default function App() {
       </div>
 
       {/* Navigation */}
-      <header className="border-b border-slate-800/80 bg-slate-900/40 backdrop-blur-md sticky top-0 z-40">
+      <header className="border-b border-slate-200 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/40 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-[1px] shadow-lg shadow-indigo-500/20">
-              <div className="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center">
+              <div className="w-full h-full bg-white dark:bg-slate-950 rounded-[11px] flex items-center justify-center">
                 <CloudLightning className="w-5 h-5 text-indigo-400" />
               </div>
             </div>
             <div>
-              <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+              <span className="font-bold text-lg tracking-tight text-slate-900 dark:bg-gradient-to-r dark:from-white dark:via-slate-100 dark:to-slate-400 dark:bg-clip-text dark:text-transparent">
                 AutomateFlow
               </span>
-              <span className="ml-2 text-xs font-medium px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+              <span className="ml-2 text-xs font-medium px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20">
                 Pipeline Connected
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 text-xs text-slate-400 bg-slate-800/60 px-3 py-1.5 rounded-lg border border-slate-700/60">
+            <div className="hidden sm:flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/60 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700/60">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               <span>GitHub &bull; Vercel Live CI/CD</span>
             </div>
+            <button
+              onClick={() => setTheme(t => (t === 'dark' ? 'light' : 'dark'))}
+              aria-label="Toggle dark mode"
+              title="Toggle dark mode"
+              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
+            >
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
             <a
               href="https://github.com"
               target="_blank"
               rel="noreferrer"
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors"
+              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
             >
               <GithubIcon className="w-5 h-5" />
             </a>
@@ -177,23 +197,23 @@ export default function App() {
       <main className="flex-1 max-w-6xl w-full mx-auto px-6 py-10 space-y-10">
         {/* Hero Section */}
         <section className="text-center space-y-4 max-w-3xl mx-auto pt-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20 text-xs font-semibold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20 text-xs font-semibold uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" /> AI to Production in Seconds
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
             Code with AI. Sync in VS Code.
             <br />
-            <span className="bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-300 dark:to-pink-400 bg-clip-text text-transparent">
               Auto-Deploy to Vercel.
             </span>
           </h1>
-          <p className="text-slate-400 text-base sm:text-lg">
+          <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg">
             A seamless automated pipeline: Prompt your AI assistant inside your workspace, commit to GitHub, and let Vercel trigger global edge deployments automatically.
           </p>
         </section>
 
         {/* Live Interactive Trigger Console */}
-        <section className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 shadow-xl backdrop-blur-sm relative overflow-hidden">
+        <section className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xl backdrop-blur-sm relative overflow-hidden">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <div className="relative flex-1">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -204,7 +224,7 @@ export default function App() {
                 value={promptInput}
                 onChange={e => setPromptInput(e.target.value)}
                 placeholder="What app do you want to create?"
-                className="w-full pl-11 pr-4 py-3 bg-slate-950/80 border border-slate-700/80 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all text-sm sm:text-base font-medium"
+                className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-950/80 border border-slate-300 dark:border-slate-700/80 rounded-xl text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all text-sm sm:text-base font-medium"
               />
             </div>
             <button
@@ -237,7 +257,7 @@ export default function App() {
               <button
                 key={prompt}
                 onClick={() => setPromptInput(prompt)}
-                className="px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700/50 transition-colors"
+                className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700/50 transition-colors"
               >
                 {prompt}
               </button>
@@ -248,7 +268,7 @@ export default function App() {
         {/* Pipeline Architecture Visualizer */}
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-slate-200 flex items-center gap-2">
+            <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2">
               <Activity className="w-5 h-5 text-indigo-400" />
               Automated Pipeline Workflow
             </h2>
@@ -270,10 +290,10 @@ export default function App() {
                   key={step.id}
                   className={`relative p-5 rounded-xl border transition-all duration-300 flex flex-col justify-between ${
                     isCurrent
-                      ? 'bg-indigo-950/40 border-indigo-500/80 shadow-lg shadow-indigo-500/20 ring-1 ring-indigo-500'
+                      ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-500/80 shadow-lg shadow-indigo-500/20 ring-1 ring-indigo-500'
                       : isDone
-                      ? 'bg-slate-900/80 border-emerald-500/40'
-                      : 'bg-slate-900/40 border-slate-800'
+                      ? 'bg-white dark:bg-slate-900/80 border-emerald-500/40'
+                      : 'bg-slate-50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800'
                   }`}
                 >
                   <div className="space-y-3">
@@ -284,7 +304,7 @@ export default function App() {
                             ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
                             : isCurrent
                             ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 animate-pulse'
-                            : 'bg-slate-800 text-slate-400'
+                            : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
                         }`}
                       >
                         <Icon className="w-5 h-5" />
@@ -293,14 +313,14 @@ export default function App() {
                     </div>
 
                     <div>
-                      <h3 className="font-semibold text-sm text-slate-100">{step.title}</h3>
-                      <p className="text-xs text-indigo-300/80 font-medium">{step.subtitle}</p>
+                      <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100">{step.title}</h3>
+                      <p className="text-xs text-indigo-600 dark:text-indigo-300/80 font-medium">{step.subtitle}</p>
                     </div>
 
-                    <p className="text-xs text-slate-400 leading-relaxed">{step.details}</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{step.details}</p>
                   </div>
 
-                  <div className="pt-4 mt-3 border-t border-slate-800/60 flex items-center justify-between text-xs">
+                  <div className="pt-4 mt-3 border-t border-slate-200 dark:border-slate-800/60 flex items-center justify-between text-xs">
                     {isDone ? (
                       <span className="text-emerald-400 flex items-center gap-1 font-medium">
                         <CheckCircle2 className="w-3.5 h-3.5" /> Synced
@@ -322,14 +342,14 @@ export default function App() {
 
           {/* Success Banner when deployment finished */}
           {pipelineState === 'completed' && (
-            <div className="p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/40 flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in duration-300">
+            <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/40 flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in duration-300">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
                   <Check className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-emerald-300 text-sm">Deployment Succeeded!</h4>
-                  <p className="text-xs text-emerald-400/80">Code committed to Git, pushed to GitHub, and deployed on Vercel Edge.</p>
+                  <h4 className="font-semibold text-emerald-700 dark:text-emerald-300 text-sm">Deployment Succeeded!</h4>
+                  <p className="text-xs text-emerald-600 dark:text-emerald-400/80">Code committed to Git, pushed to GitHub, and deployed on Vercel Edge.</p>
                 </div>
               </div>
               <a
@@ -347,99 +367,99 @@ export default function App() {
 
         {/* Real-time Status & Metrics Grid */}
         <section className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-          <div className="p-5 rounded-xl bg-slate-900/50 border border-slate-800 space-y-2">
-            <div className="flex items-center justify-between text-slate-400 text-xs">
+          <div className="p-5 rounded-xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 space-y-2">
+            <div className="flex items-center justify-between text-slate-600 dark:text-slate-400 text-xs">
               <span>Avg Deployment Latency</span>
               <CloudLightning className="w-4 h-4 text-amber-400" />
             </div>
-            <div className="text-2xl font-bold text-white font-mono">28.4s</div>
-            <p className="text-xs text-emerald-400 font-medium">&uarr; 35% faster with edge caching</p>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white font-mono">28.4s</div>
+            <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">&uarr; 35% faster with edge caching</p>
           </div>
 
-          <div className="p-5 rounded-xl bg-slate-900/50 border border-slate-800 space-y-2">
-            <div className="flex items-center justify-between text-slate-400 text-xs">
+          <div className="p-5 rounded-xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 space-y-2">
+            <div className="flex items-center justify-between text-slate-600 dark:text-slate-400 text-xs">
               <span>GitHub Commits</span>
               <GitBranch className="w-4 h-4 text-indigo-400" />
             </div>
-            <div className="text-2xl font-bold text-white font-mono">{commitCount} commits</div>
-            <p className="text-xs text-slate-400">All pushed to <code className="text-indigo-300">origin/main</code></p>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white font-mono">{commitCount} commits</div>
+            <p className="text-xs text-slate-600 dark:text-slate-400">All pushed to <code className="text-indigo-600 dark:text-indigo-300">origin/main</code></p>
           </div>
 
-          <div className="p-5 rounded-xl bg-slate-900/50 border border-slate-800 space-y-2">
-            <div className="flex items-center justify-between text-slate-400 text-xs">
+          <div className="p-5 rounded-xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 space-y-2">
+            <div className="flex items-center justify-between text-slate-600 dark:text-slate-400 text-xs">
               <span>CI/CD Webhook Trigger</span>
               <Activity className="w-4 h-4 text-emerald-400" />
             </div>
-            <div className="text-2xl font-bold text-emerald-400 font-mono">Active</div>
-            <p className="text-xs text-slate-400">Vercel GitHub Integration 100% healthy</p>
+            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono">Active</div>
+            <p className="text-xs text-slate-600 dark:text-slate-400">Vercel GitHub Integration 100% healthy</p>
           </div>
         </section>
 
         {/* How Option 1 Works (Educational Guide) */}
-        <section className="p-6 rounded-2xl bg-slate-900/30 border border-slate-800/80 space-y-4">
-          <h3 className="font-semibold text-white flex items-center gap-2 text-sm">
+        <section className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800/80 space-y-4">
+          <h3 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2 text-sm">
             <Terminal className="w-4 h-4 text-indigo-400" />
             Your Command Cheat Sheet (VS Code &bull; Git &bull; Vercel)
           </h3>
-          <div className="bg-slate-950 p-4 rounded-xl font-mono text-xs text-slate-300 space-y-2 border border-slate-800/60 overflow-x-auto">
+          <div className="bg-slate-100 dark:bg-slate-950 p-4 rounded-xl font-mono text-xs text-slate-700 dark:text-slate-300 space-y-2 border border-slate-300 dark:border-slate-800/60 overflow-x-auto">
             <p className="text-slate-500"># 1. Prompt the AI agent to edit files or build new components</p>
-            <p className="text-indigo-300"># (The AI creates or modifies your files directly in VS Code)</p>
+            <p className="text-indigo-600 dark:text-indigo-300"># (The AI creates or modifies your files directly in VS Code)</p>
             <p className="text-slate-500"># 2. Stage and commit your changes</p>
-            <p className="text-emerald-400">git add . && git commit -m "feat: added new feature with AI"</p>
+            <p className="text-emerald-600 dark:text-emerald-400">git add . && git commit -m "feat: added new feature with AI"</p>
             <p className="text-slate-500"># 3. Push to GitHub (Triggers Vercel immediately!)</p>
-            <p className="text-pink-400">git push</p>
+            <p className="text-pink-600 dark:text-pink-400">git push</p>
           </div>
         </section>
         {/* Pricing Table — AI-Generated Feature Test */}
         <section className="space-y-6">
           <div className="text-center space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 text-pink-300 border border-pink-500/20 text-xs font-semibold uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 text-pink-700 dark:text-pink-300 border border-pink-500/20 text-xs font-semibold uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5" /> AI-Generated Feature — Live Test
             </div>
-            <h2 className="text-2xl font-bold text-white">Simple, Transparent Pricing</h2>
-            <p className="text-slate-400 text-sm">This entire section was added by AI and auto-deployed to Vercel in one git push.</p>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Simple, Transparent Pricing</h2>
+            <p className="text-slate-600 dark:text-slate-400 text-sm">This entire section was added by AI and auto-deployed to Vercel in one git push.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {/* Free Tier */}
-            <div className="relative p-6 rounded-2xl bg-slate-900/50 border border-slate-800 flex flex-col gap-4">
+            <div className="relative p-6 rounded-2xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 flex flex-col gap-4">
               <div>
-                <h3 className="font-bold text-slate-200 text-lg">Free</h3>
-                <p className="text-slate-400 text-xs mt-1">Perfect for side projects & experiments</p>
+                <h3 className="font-bold text-slate-900 dark:text-slate-200 text-lg">Free</h3>
+                <p className="text-slate-600 dark:text-slate-400 text-xs mt-1">Perfect for side projects & experiments</p>
               </div>
               <div className="flex items-end gap-1">
-                <span className="text-4xl font-extrabold text-white">$0</span>
-                <span className="text-slate-400 text-sm mb-1">/month</span>
+                <span className="text-4xl font-extrabold text-slate-900 dark:text-white">$0</span>
+                <span className="text-slate-500 dark:text-slate-400 text-sm mb-1">/month</span>
               </div>
               <ul className="space-y-2 flex-1">
                 {['1 Project', '3 AI Deployments/day', 'GitHub Integration', 'Community Support'].map(f => (
-                  <li key={f} className="flex items-center gap-2 text-slate-300 text-sm">
+                  <li key={f} className="flex items-center gap-2 text-slate-700 dark:text-slate-300 text-sm">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                     {f}
                   </li>
                 ))}
               </ul>
-              <button className="mt-2 w-full py-2.5 rounded-xl border border-slate-700 text-slate-300 font-semibold text-sm hover:bg-slate-800 transition-colors">
+              <button className="mt-2 w-full py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                 Get Started Free
               </button>
             </div>
 
             {/* Pro Tier — Highlighted */}
-            <div className="relative p-6 rounded-2xl bg-gradient-to-b from-indigo-950/80 to-slate-900/80 border border-indigo-500/50 flex flex-col gap-4 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/30">
+            <div className="relative p-6 rounded-2xl bg-gradient-to-b from-indigo-50 to-white dark:from-indigo-950/80 dark:to-slate-900/80 border border-indigo-500/50 flex flex-col gap-4 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/30">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-indigo-500 text-white text-xs font-bold">
                 Most Popular
               </div>
               <div>
-                <h3 className="font-bold text-white text-lg">Pro</h3>
-                <p className="text-indigo-300/80 text-xs mt-1">For developers shipping real products</p>
+                <h3 className="font-bold text-slate-900 dark:text-white text-lg">Pro</h3>
+                <p className="text-indigo-700 dark:text-indigo-300/80 text-xs mt-1">For developers shipping real products</p>
               </div>
               <div className="flex items-end gap-1">
-                <span className="text-4xl font-extrabold text-white">$29</span>
-                <span className="text-indigo-300 text-sm mb-1">/month</span>
+                <span className="text-4xl font-extrabold text-slate-900 dark:text-white">$29</span>
+                <span className="text-indigo-600 dark:text-indigo-300 text-sm mb-1">/month</span>
               </div>
               <ul className="space-y-2 flex-1">
                 {['Unlimited Projects', 'Unlimited AI Deployments', 'GitHub + VS Code Sync', 'Vercel Edge CI/CD', 'Priority Support'].map(f => (
-                  <li key={f} className="flex items-center gap-2 text-slate-200 text-sm">
+                  <li key={f} className="flex items-center gap-2 text-slate-800 dark:text-slate-200 text-sm">
                     <CheckCircle2 className="w-4 h-4 text-indigo-400 shrink-0" />
                     {f}
                   </li>
@@ -451,24 +471,24 @@ export default function App() {
             </div>
 
             {/* Enterprise Tier */}
-            <div className="relative p-6 rounded-2xl bg-slate-900/50 border border-slate-800 flex flex-col gap-4">
+            <div className="relative p-6 rounded-2xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 flex flex-col gap-4">
               <div>
-                <h3 className="font-bold text-slate-200 text-lg">Enterprise</h3>
-                <p className="text-slate-400 text-xs mt-1">For teams and organisations at scale</p>
+                <h3 className="font-bold text-slate-900 dark:text-slate-200 text-lg">Enterprise</h3>
+                <p className="text-slate-600 dark:text-slate-400 text-xs mt-1">For teams and organisations at scale</p>
               </div>
               <div className="flex items-end gap-1">
-                <span className="text-4xl font-extrabold text-white">$99</span>
-                <span className="text-slate-400 text-sm mb-1">/month</span>
+                <span className="text-4xl font-extrabold text-slate-900 dark:text-white">$99</span>
+                <span className="text-slate-500 dark:text-slate-400 text-sm mb-1">/month</span>
               </div>
               <ul className="space-y-2 flex-1">
                 {['Everything in Pro', 'Team Access & SSO', 'Custom AI Models', 'Dedicated Infra', 'SLA + Dedicated Support'].map(f => (
-                  <li key={f} className="flex items-center gap-2 text-slate-300 text-sm">
+                  <li key={f} className="flex items-center gap-2 text-slate-700 dark:text-slate-300 text-sm">
                     <CheckCircle2 className="w-4 h-4 text-purple-400 shrink-0" />
                     {f}
                   </li>
                 ))}
               </ul>
-              <button className="mt-2 w-full py-2.5 rounded-xl border border-purple-500/50 text-purple-300 font-semibold text-sm hover:bg-purple-500/10 transition-colors">
+              <button className="mt-2 w-full py-2.5 rounded-xl border border-purple-500/50 text-purple-700 dark:text-purple-300 font-semibold text-sm hover:bg-purple-500/10 transition-colors">
                 Contact Sales
               </button>
             </div>
@@ -477,7 +497,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 py-6 text-center text-xs text-slate-500">
+      <footer className="border-t border-slate-200 dark:border-slate-900 py-6 text-center text-xs text-slate-500">
         AutomateFlow AI &bull; Built with React, Vite, Tailwind CSS &amp; Lucide Icons &bull; Powered by Antigravity
       </footer>
     </div>
