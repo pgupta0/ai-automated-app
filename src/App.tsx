@@ -390,6 +390,90 @@ export default function App() {
             <p className="text-pink-400">git push</p>
           </div>
         </section>
+        {/* Pricing Table — AI-Generated Feature Test */}
+        <section className="space-y-6">
+          <div className="text-center space-y-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 text-pink-300 border border-pink-500/20 text-xs font-semibold uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5" /> AI-Generated Feature — Live Test
+            </div>
+            <h2 className="text-2xl font-bold text-white">Simple, Transparent Pricing</h2>
+            <p className="text-slate-400 text-sm">This entire section was added by AI and auto-deployed to Vercel in one git push.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {/* Free Tier */}
+            <div className="relative p-6 rounded-2xl bg-slate-900/50 border border-slate-800 flex flex-col gap-4">
+              <div>
+                <h3 className="font-bold text-slate-200 text-lg">Free</h3>
+                <p className="text-slate-400 text-xs mt-1">Perfect for side projects & experiments</p>
+              </div>
+              <div className="flex items-end gap-1">
+                <span className="text-4xl font-extrabold text-white">$0</span>
+                <span className="text-slate-400 text-sm mb-1">/month</span>
+              </div>
+              <ul className="space-y-2 flex-1">
+                {['1 Project', '3 AI Deployments/day', 'GitHub Integration', 'Community Support'].map(f => (
+                  <li key={f} className="flex items-center gap-2 text-slate-300 text-sm">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <button className="mt-2 w-full py-2.5 rounded-xl border border-slate-700 text-slate-300 font-semibold text-sm hover:bg-slate-800 transition-colors">
+                Get Started Free
+              </button>
+            </div>
+
+            {/* Pro Tier — Highlighted */}
+            <div className="relative p-6 rounded-2xl bg-gradient-to-b from-indigo-950/80 to-slate-900/80 border border-indigo-500/50 flex flex-col gap-4 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/30">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-indigo-500 text-white text-xs font-bold">
+                Most Popular
+              </div>
+              <div>
+                <h3 className="font-bold text-white text-lg">Pro</h3>
+                <p className="text-indigo-300/80 text-xs mt-1">For developers shipping real products</p>
+              </div>
+              <div className="flex items-end gap-1">
+                <span className="text-4xl font-extrabold text-white">$29</span>
+                <span className="text-indigo-300 text-sm mb-1">/month</span>
+              </div>
+              <ul className="space-y-2 flex-1">
+                {['Unlimited Projects', 'Unlimited AI Deployments', 'GitHub + VS Code Sync', 'Vercel Edge CI/CD', 'Priority Support'].map(f => (
+                  <li key={f} className="flex items-center gap-2 text-slate-200 text-sm">
+                    <CheckCircle2 className="w-4 h-4 text-indigo-400 shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <button className="mt-2 w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm transition-all shadow-lg shadow-indigo-500/25">
+                Start Pro Trial
+              </button>
+            </div>
+
+            {/* Enterprise Tier */}
+            <div className="relative p-6 rounded-2xl bg-slate-900/50 border border-slate-800 flex flex-col gap-4">
+              <div>
+                <h3 className="font-bold text-slate-200 text-lg">Enterprise</h3>
+                <p className="text-slate-400 text-xs mt-1">For teams and organisations at scale</p>
+              </div>
+              <div className="flex items-end gap-1">
+                <span className="text-4xl font-extrabold text-white">$99</span>
+                <span className="text-slate-400 text-sm mb-1">/month</span>
+              </div>
+              <ul className="space-y-2 flex-1">
+                {['Everything in Pro', 'Team Access & SSO', 'Custom AI Models', 'Dedicated Infra', 'SLA + Dedicated Support'].map(f => (
+                  <li key={f} className="flex items-center gap-2 text-slate-300 text-sm">
+                    <CheckCircle2 className="w-4 h-4 text-purple-400 shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <button className="mt-2 w-full py-2.5 rounded-xl border border-purple-500/50 text-purple-300 font-semibold text-sm hover:bg-purple-500/10 transition-colors">
+                Contact Sales
+              </button>
+            </div>
+          </div>
+        </section>
       </main>
 
       {/* Footer */}
